@@ -91,7 +91,6 @@ public class SlideViewPager extends FrameLayout {
                 mIndicatorViews[i].setSelected(true);
             } else {
                 mIndicatorViews[i].setBackgroundResource(indicator);
-//                mIndicatorViews[i].setSelected(false);
             }
             indicatorRoot.addView(mIndicatorViews[i], params);
         }
@@ -117,7 +116,6 @@ public class SlideViewPager extends FrameLayout {
                 mIndicatorViews[i].setSelected(true);
             } else {
                 mIndicatorViews[i].setBackgroundResource(indicator);
-//                mIndicatorViews[i].setSelected(false);
             }
             indicatorRoot.addView(mIndicatorViews[i], params);
         }
