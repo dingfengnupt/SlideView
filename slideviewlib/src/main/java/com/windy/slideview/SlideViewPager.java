@@ -23,8 +23,8 @@ public class SlideViewPager extends FrameLayout {
 
     private int currentItem = 0;
     private int adapterCount = 0;
-
-    private final static int DEFAULT_SCROLL_TIME = 3000;
+    private long interval;
+    private final static long DEFAULT_INTERVAL_TIME = 3000l;
 
     public SlideViewPager(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -43,41 +43,41 @@ public class SlideViewPager extends FrameLayout {
 
     private void init(Context context) {
         mContext = context;
+        interval = DEFAULT_INTERVAL_TIME;
         mAutoScrollViewPager = new AutoScrollViewPager(context);
-        addView(mAutoScrollViewPager, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        addView(mAutoScrollViewPager, new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT));
         indicatorRoot = new LinearLayout(context);
         LayoutParams p = new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
         p.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        p.bottomMargin = (int) mContext.getResources().getDimension(R.dimen.indicator_root_margin_bottom);
+        p.bottomMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_root_margin_bottom);
         indicatorRoot.setLayoutParams(p);
-        indicator = R.drawable.indicator;
+        indicator = R.drawable.vp_indicator_selector;
         addView(indicatorRoot);
     }
 
-    public void setSize(int size) {
+    /**
+     * distance to bottom
+     * @param resId
+     */
+    public void setDistance(int resId) {
+        LayoutParams p = (FrameLayout.LayoutParams)indicatorRoot.getLayoutParams();
+        p.bottomMargin = (int)getResources().getDimension(resId);
+        indicatorRoot.setLayoutParams(p);
+        invalidate();
+    }
+
+    /**
+     * @param size
+     */
+    public void setIndicator(int size) {
         adapterCount = size;
-    }
-
-    public void setAdapter(PagerAdapter adapter) {
-        if (adapter != null) {
-            mIndicatorViews = new ImageView[adapterCount];
-            setIndicator(adapterCount);
-            if (adapterCount > 1) {
-                mAutoScrollViewPager.setAdapter(adapter);
-                mAutoScrollViewPager.setInterval(DEFAULT_SCROLL_TIME);
-                mAutoScrollViewPager.startAutoScroll();
-            }
-            mAutoScrollViewPager.setAdapter(adapter);
-            mAutoScrollViewPager.addOnPageChangeListener(onPageChangeListener);
-        }
-    }
-
-    private void setIndicator(int size) {
+        mIndicatorViews = new ImageView[size];
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;
-        params.rightMargin = (int) mContext.getResources().getDimension(R.dimen.indicator_margin_right);
-        params.leftMargin = (int) mContext.getResources().getDimension(R.dimen.indicator_margin_left);
+        params.leftMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_margin_left);
+        params.rightMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_margin_right);
         for (int i = 0; i < size; i++) {
             mIndicatorViews[i] = new ImageView(mContext);
             mIndicatorViews[i].setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -92,18 +92,59 @@ public class SlideViewPager extends FrameLayout {
         }
     }
 
-    public void setInterval(int interval) {
-        mAutoScrollViewPager.setInterval(interval);
-    }
-
-    private void updateIndicator() {
-        for (int i = 0; i < adapterCount; i++) {
-            if (currentItem == i) {
+    /**
+     * @param size
+     * @param resId
+     */
+    public void setIndicator(int size, int resId) {
+        adapterCount = size;
+        mIndicatorViews = new ImageView[size];
+        indicator = resId;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        params.weight = 1;
+        params.leftMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_margin_left);
+        params.rightMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_margin_right);
+        for (int i = 0; i < size; i++) {
+            mIndicatorViews[i] = new ImageView(mContext);
+            mIndicatorViews[i].setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            if (i == 0) {
+                mIndicatorViews[i].setBackgroundResource(indicator);
                 mIndicatorViews[i].setSelected(true);
             } else {
+                mIndicatorViews[i].setBackgroundResource(indicator);
                 mIndicatorViews[i].setSelected(false);
             }
+            indicatorRoot.addView(mIndicatorViews[i], params);
         }
+    }
+
+    /**
+     * @param adapter
+     */
+    public void setAdapter(PagerAdapter adapter) {
+        if (adapter != null) {
+            mAutoScrollViewPager.setAdapter(adapter);
+            mAutoScrollViewPager.addOnPageChangeListener(onPageChangeListener);
+            if (adapterCount > 1) {
+                mAutoScrollViewPager.setInterval(interval);
+                mAutoScrollViewPager.startAutoScroll();
+            }
+        }
+    }
+
+    /**
+     * @param interval
+     */
+    public void setInterval(long interval) {
+        this.interval = interval;
+    }
+
+    /**
+     * destory
+     */
+    public void onDestroy() {
+        mAutoScrollViewPager.onDestroy();
+        mContext = null;
     }
 
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -125,9 +166,16 @@ public class SlideViewPager extends FrameLayout {
         }
     };
 
-    public void onDestroy() {
-        mAutoScrollViewPager.onDestroy();
-        mContext = null;
+    private void updateIndicator() {
+        for (int i = 0; i < adapterCount; i++) {
+            if (currentItem == i) {
+                mIndicatorViews[i].setSelected(true);
+            } else {
+                mIndicatorViews[i].setSelected(false);
+            }
+        }
     }
+
+
 
 }

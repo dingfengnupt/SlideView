@@ -1,7 +1,5 @@
 <resources>
 
-    <dimen name="indicator_root_margin_bottom">10dp</dimen>
-    <dimen name="indicator_margin_left">5dp</dimen>
-    <dimen name="indicator_margin_right">5dp</dimen>
+    <dimen name="indicator_root_margin_bottom">30dp</dimen>
 
 </resources>
