@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 //        mSlideViewPager.setDistance(R.dimen.indicator_root_margin_bottom);
 //        mSlideViewPager.setIndicator(mUrls.length, R.drawable.indicator);
         mSlideViewPager.setIndicator(mUrls.length);
-        mSlideViewPager.setInterval(8000);
+        mSlideViewPager.setInterval(5000);
         MyAdapter adapter = new MyAdapter(this, mUrls);
         adapter.setInfiniteLoop(true);
         mSlideViewPager.setAdapter(adapter);

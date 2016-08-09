@@ -20,10 +20,10 @@ public class SlideViewPager extends FrameLayout {
     private LinearLayout indicatorRoot;
     private ImageView[] mIndicatorViews;
     private int indicator;
-
     private int currentItem = 0;
     private int adapterCount = 0;
     private long interval;
+    // default interval
     private final static long DEFAULT_INTERVAL_TIME = 3000l;
 
     public SlideViewPager(Context context, AttributeSet attrs, int defStyle) {
@@ -51,7 +51,8 @@ public class SlideViewPager extends FrameLayout {
         LayoutParams p = new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
         p.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        p.bottomMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_root_margin_bottom);
+        p.bottomMargin = (int) mContext.getResources().
+                getDimension(R.dimen.vp_indicator_root_margin_bottom);
         indicatorRoot.setLayoutParams(p);
         indicator = R.drawable.vp_indicator_selector;
         addView(indicatorRoot);
@@ -74,19 +75,23 @@ public class SlideViewPager extends FrameLayout {
     public void setIndicator(int size) {
         adapterCount = size;
         mIndicatorViews = new ImageView[size];
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;
-        params.leftMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_margin_left);
-        params.rightMargin = (int) mContext.getResources().getDimension(R.dimen.vp_indicator_margin_right);
+        params.leftMargin = (int) mContext.getResources().
+                getDimension(R.dimen.vp_indicator_margin_left);
+        params.rightMargin = (int) mContext.getResources().
+                getDimension(R.dimen.vp_indicator_margin_right);
         for (int i = 0; i < size; i++) {
             mIndicatorViews[i] = new ImageView(mContext);
-            mIndicatorViews[i].setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            mIndicatorViews[i].setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
             if (i == 0) {
                 mIndicatorViews[i].setBackgroundResource(indicator);
                 mIndicatorViews[i].setSelected(true);
             } else {
                 mIndicatorViews[i].setBackgroundResource(indicator);
-                mIndicatorViews[i].setSelected(false);
+//                mIndicatorViews[i].setSelected(false);
             }
             indicatorRoot.addView(mIndicatorViews[i], params);
         }
@@ -112,7 +117,7 @@ public class SlideViewPager extends FrameLayout {
                 mIndicatorViews[i].setSelected(true);
             } else {
                 mIndicatorViews[i].setBackgroundResource(indicator);
-                mIndicatorViews[i].setSelected(false);
+//                mIndicatorViews[i].setSelected(false);
             }
             indicatorRoot.addView(mIndicatorViews[i], params);
         }
@@ -140,7 +145,7 @@ public class SlideViewPager extends FrameLayout {
     }
 
     /**
-     * destory
+     * destroy
      */
     public void onDestroy() {
         mAutoScrollViewPager.onDestroy();
@@ -175,7 +180,5 @@ public class SlideViewPager extends FrameLayout {
             }
         }
     }
-
-
 
 }
